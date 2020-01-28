@@ -9,12 +9,6 @@ import (
 
 const firstStepIndex = 1
 
-type Store interface {
-	Put(key string, value interface{}) error
-	Get(key string, value interface{}) error
-	Delete(key string) error
-}
-
 type (
 	// Exchanges are a way to have a back and forth conversation between a slack user and a slack bot.
 	// When a user sends a message that matches the Regex specified in the exchange, the exchange with
@@ -122,7 +116,11 @@ func (ex *Exchange) continueExecution(ev *slack.MessageEvent) {
 }
 
 func (ex *Exchange) handleError(step *Step, err error) {
-	msg := fmt.Sprintf("An error has occurred in exchange %s-%s, step %d %s: %s", ex.Channel, ex.Thread, ex.currentStep, step.Name, err)
+	stepName := ""
+	if step != nil {
+		stepName = step.Name
+	}
+	msg := fmt.Sprintf("An error has occurred in exchange %s-%s, step %d %s: %s", ex.Channel, ex.Thread, ex.currentStep, stepName, err)
 	ex.Bot.LogDebug(msg)
 	delete(ex.Bot.activeExchanges, ex.Thread)
 }
