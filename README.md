@@ -178,7 +178,7 @@ the MsgHandler will be called. As the exchange moves to the next step if MsgHand
 interaction method, the MsgHandler will not be called until an incoming message event happens 
 on the exchange's thread.
 
-See [Exchanges](http://godoc-app.eng.qops.net/gitlab-app.eng.qops.net/derekn/slackbot#Exchange) in the godocs for 
+See [Exchanges](https://godoc.org/github.com/daftn/slackbot#Exchange) in the godocs for 
 functions available on the exchange that will be passed to the Handlers and MsgHandlers.
 
 **Example**:  

@@ -50,6 +50,7 @@ const (
 	circuitBreakerMessage     = "*CIRCUIT BREAKER TRIPPED*\nMore than %d messages were sent in under %d seconds\n\nSelf destruct sequence initiated. Goodbye."
 	slackConnectionRetry      = 10
 	slackConnectionRetrySleep = 500 * time.Millisecond
+	directMessagePrefix       = "D"
 )
 
 type (
@@ -61,7 +62,7 @@ type (
 		// Slack api client, through which all slack api interactions will happen.
 		// Having the client available on the bot also allows all of the slack api
 		// functions to be access by the bot in DirectListeners, Exchanges, and ScheduledTasks.
-		API *slackClient
+		API MessagingClient
 
 		// If a user chats the bot and the message does not match a regex for any DirectListeners
 		// or Exchanges, the Fallback message will be sent as a reply. If FallbackMessage
@@ -70,7 +71,13 @@ type (
 
 		// If the debug channel is set, any string passed to the bot.LogDebug(string) function will
 		// be sent to the DebugChannel before being logged to std out.
-		DebugChannel      string
+		DebugChannel string
+
+		// Store can be used persist data through restarts or pass data between different methods.
+		// It is an interface that can be implemented with a real db that can persist data or you could
+		// use the SimpleStore in this package to store data only for the life of the current slackbot process.
+		Store Store
+
 		CircuitBreaker    *CircuitBreaker
 		DirectListeners   []Listener
 		IndirectListeners []Listener
@@ -79,6 +86,7 @@ type (
 
 		activeExchanges map[string]*Exchange
 		userDetails     *slack.UserDetails
+		terminate       func(int)
 		once            sync.Once
 	}
 
@@ -104,6 +112,12 @@ type (
 		Regex   *regexp.Regexp
 		Handler func(bot *Bot, ev *slack.MessageEvent)
 	}
+
+	Store interface {
+		Put(key string, value interface{}) error
+		Get(key string, value interface{}) error
+		Delete(key string) error
+	}
 )
 
 func (bot *Bot) init() {
@@ -125,6 +139,7 @@ func (bot *Bot) init() {
 		bot.DebugChannel = ID
 	}
 	bot.activeExchanges = make(map[string]*Exchange)
+	bot.terminate = os.Exit
 }
 
 // Start will schedule any Scheduled Tasks on the bot, start managing connections and
@@ -196,7 +211,7 @@ func (bot *Bot) listen() error {
 
 	for {
 		select {
-		case msg := <-bot.API.IncomingEvents:
+		case msg := <-bot.API.GetIncomingEvents():
 			switch ev := msg.Data.(type) {
 
 			case *slack.ConnectedEvent:
@@ -228,7 +243,7 @@ func (bot *Bot) processMessage(ev *slack.MessageEvent) {
 	userPrefix := fmt.Sprintf("<@%s> ", bot.userDetails.ID)
 	exchange, activeThread := bot.activeExchanges[ev.ThreadTimestamp]
 	if ev.User != "" && ev.User != bot.userDetails.ID && ev.Text != "" &&
-		(strings.HasPrefix(ev.Msg.Channel, "D") || strings.HasPrefix(ev.Text, userPrefix) || activeThread) {
+		(strings.HasPrefix(ev.Msg.Channel, directMessagePrefix) || strings.HasPrefix(ev.Text, userPrefix) || activeThread) {
 
 		ev.Text = strings.TrimSpace(strings.TrimPrefix(ev.Text, userPrefix))
 
@@ -254,7 +269,7 @@ func (bot *Bot) processMessage(ev *slack.MessageEvent) {
 
 		// If there are no exchanges or listeners that match the message, reply with the fallback message.
 		if ev.ThreadTimestamp == "" {
-			bot.Reply(ev.Channel, bot.FallbackMessage)
+			_, _, _ = bot.Reply(ev.Channel, bot.FallbackMessage)
 		}
 	}
 }
@@ -267,8 +282,9 @@ func (bot *Bot) checkCircuitBreaker(channel string) {
 			bot.CircuitBreaker.count = 1
 		} else if bot.CircuitBreaker.count > bot.CircuitBreaker.MaxMessages {
 			msg := fmt.Sprintf(circuitBreakerMessage, bot.CircuitBreaker.MaxMessages, bot.CircuitBreaker.TimeInterval/time.Second)
-			bot.API.PostMessage(channel, slack.MsgOptionText(msg, false), slack.MsgOptionAsUser(true))
-			os.Exit(-1)
+			_, _, _ = bot.API.PostMessage(channel, slack.MsgOptionText(msg, false), slack.MsgOptionAsUser(true))
+			log.Println(msg)
+			bot.terminate(-1)
 		}
 	}
 }
@@ -303,7 +319,7 @@ func (bot *Bot) LogDebug(msg string) {
 	if bot.DebugChannel != "" {
 		bot.checkCircuitBreaker(bot.DebugChannel)
 		if _, _, err := bot.API.PostMessage(bot.DebugChannel, slack.MsgOptionText(msg, false), slack.MsgOptionAsUser(true)); err != nil {
-			log.Printf("Error sending message to debug channel %s - %s", bot.DebugChannel, err)
+			log.Printf("Error sending message to debug channel %s - %s\n", bot.DebugChannel, err)
 		}
 	}
 	log.Println(msg)

@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/daftn/slackbot"
 	"github.com/nlopes/slack"
-	"gitlab-app.eng.qops.net/derekn/slackbot"
 	"net/http"
 	"regexp"
 	"time"

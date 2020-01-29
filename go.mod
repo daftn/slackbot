@@ -1,9 +1,10 @@
-module gitlab-app.eng.qops.net/derekn/slackbot
+module github.com/daftn/slackbot
+
+go 1.13
 
 require (
-	github.com/gorilla/websocket v1.4.0 // indirect
-	github.com/nlopes/slack v0.5.0
-	github.com/pkg/errors v0.8.1
-	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967
-	github.com/ulule/deepcopier v0.0.0-20171107155558-ca99b135e50f
+	github.com/nlopes/slack v0.6.0
+	github.com/pkg/errors v0.9.1
+	github.com/robfig/cron v1.2.0
+	github.com/ulule/deepcopier v0.0.0-20200117111125-792cfb847af8
 )
