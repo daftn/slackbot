@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/daftn/slackbot"
 	"github.com/nlopes/slack"
-	"gitlab-app.eng.qops.net/derekn/slackbot"
 	"regexp"
 )
 
@@ -22,11 +22,14 @@ func main() {
 				Usage: "say hi and I'll respond",
 				Regex: regexp.MustCompile(`^(?i)(hello|hi|hey|howdy|hola)`),
 				Handler: func(bot *slackbot.Bot, ev *slack.MessageEvent) {
-					bot.Reply(ev.Channel, "Hi there, nice to meet you")
+					_, _, _ = bot.Reply(ev.Channel, "Hi there, nice to meet you")
 				},
 			},
 		},
 	}
 
-	bot.Start()
+	err := bot.Start()
+	if err != nil {
+		panic("error starting bot")
+	}
 }

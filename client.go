@@ -46,7 +46,7 @@ func (s *slackClient) GetUser(identifier string) (slack.User, error) {
 }
 
 func (s *slackClient) GetIncomingEvents() chan slack.RTMEvent {
-	return s.IncomingEvents
+	return s.RTM.IncomingEvents
 }
 
 func newSlackClient(token string) *slackClient {

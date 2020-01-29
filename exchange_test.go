@@ -9,27 +9,6 @@ import (
 	"testing"
 )
 
-type mockAPI struct {
-	*slack.RTM
-	postMessage func(string, ...slack.MsgOption) (string, string, error)
-}
-
-func (m *mockAPI) PostMessage(ch string, opts ...slack.MsgOption) (string, string, error) {
-	return m.postMessage(ch, opts...)
-}
-
-func (m *mockAPI) GetChannel(identifier string) (slack.Channel, error) {
-	return slack.Channel{}, errors.New("unable to find channel with identifier")
-}
-
-func (m *mockAPI) GetUser(identifier string) (slack.User, error) {
-	return slack.User{}, errors.New("unable to find user with identifier")
-}
-
-func (m *mockAPI) GetIncomingEvents() chan slack.RTMEvent {
-	return nil
-}
-
 func TestExchange_GetCurrentStep(t *testing.T) {
 	type fields struct {
 		Regex       *regexp.Regexp

@@ -86,6 +86,7 @@ type (
 
 		activeExchanges map[string]*Exchange
 		userDetails     *slack.UserDetails
+		terminate       func(int)
 		once            sync.Once
 	}
 
@@ -138,6 +139,7 @@ func (bot *Bot) init() {
 		bot.DebugChannel = ID
 	}
 	bot.activeExchanges = make(map[string]*Exchange)
+	bot.terminate = os.Exit
 }
 
 // Start will schedule any Scheduled Tasks on the bot, start managing connections and
@@ -281,7 +283,8 @@ func (bot *Bot) checkCircuitBreaker(channel string) {
 		} else if bot.CircuitBreaker.count > bot.CircuitBreaker.MaxMessages {
 			msg := fmt.Sprintf(circuitBreakerMessage, bot.CircuitBreaker.MaxMessages, bot.CircuitBreaker.TimeInterval/time.Second)
 			_, _, _ = bot.API.PostMessage(channel, slack.MsgOptionText(msg, false), slack.MsgOptionAsUser(true))
-			os.Exit(-1)
+			log.Println(msg)
+			bot.terminate(-1)
 		}
 	}
 }
@@ -316,7 +319,7 @@ func (bot *Bot) LogDebug(msg string) {
 	if bot.DebugChannel != "" {
 		bot.checkCircuitBreaker(bot.DebugChannel)
 		if _, _, err := bot.API.PostMessage(bot.DebugChannel, slack.MsgOptionText(msg, false), slack.MsgOptionAsUser(true)); err != nil {
-			log.Printf("Error sending message to debug channel %s - %s", bot.DebugChannel, err)
+			log.Printf("Error sending message to debug channel %s - %s\n", bot.DebugChannel, err)
 		}
 	}
 	log.Println(msg)

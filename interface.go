@@ -249,8 +249,8 @@ type MessagingClient interface {
 	SetUserAsActiveContext(context.Context) error
 	SetUserCustomStatus(string, string, int64) error
 	SetUserCustomStatusContext(context.Context, string, string, int64) error
-	SetUserCustomStatusContextWithUser(context.Context, string, string, string, int64) error
-	SetUserCustomStatusWithUser(string, string, string, int64) error
+	//SetUserCustomStatusContextWithUser(context.Context, string, string, string, int64) error
+	//SetUserCustomStatusWithUser(string, string, string, int64) error
 	SetUserPhoto(string, slack.UserSetPhotoParams) error
 	SetUserPhotoContext(context.Context, string, slack.UserSetPhotoParams) error
 	SetUserPresence(string) error
