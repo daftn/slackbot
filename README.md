@@ -28,11 +28,11 @@ For more info on setting up a bot in slack see: https://api.slack.com/bot-users
 Create the bot with `bot := slackbot.Bot{}`
 ```golang
 Bot struct {
-    Token string
-    API *slackClient
+    Token           string
+    API             *slackClient
     FallbackMessage string
-    DebugChannel      string
-    CircuitBreaker    *CircuitBreaker
+    DebugChannel    string
+    CircuitBreaker  *CircuitBreaker
 
     DirectListeners   []Listener
     IndirectListeners []Listener
@@ -64,7 +64,7 @@ each of these interaction methods.
 
 ```golang
 bot := slackbot.Bot{
-    Token: "slack-token-here",
+    Token:           "slack-token-here",
     FallbackMessage: "I couldn't find that command, try again",
     DebugChannel:    "general",
     CircuitBreaker: &slackbot.CircuitBreaker{
@@ -73,8 +73,8 @@ bot := slackbot.Bot{
     },
     DirectListeners: []slackbot.Listener{
         {
-            Usage: "say hi and I'll respond",
-            Regex: regexp.MustCompile(`^(?i)(hello|hi|hey|howdy|hola)`),
+            Usage:   "say hi and I'll respond",
+            Regex:   regexp.MustCompile(`^(?i)(hello|hi|hey|howdy|hola)`),
             Handler: func(bot *slackbot.Bot, ev *slack.MessageEvent) {
                 bot.Reply(ev.Channel, "Hi there, nice to meet you")
             },
@@ -102,7 +102,7 @@ Both direct listeners and indirect listeners implement the same interface.
 ```golang
 type Listener struct {
        Usage   string
-       Regex *regexp.Regexp
+       Regex   *regexp.Regexp
        Handler func(bot *Bot, ev *slack.MessageEvent) 
 }
 ```
@@ -121,8 +121,8 @@ bot := slackbot.Bot{
     Token: apiToken,
     DirectListeners: []slackbot.Listener{
         {
-            Usage: "say hi and I'll respond",
-            Regex: regexp.MustCompile(`^(?i)(hello|hi|hey|howdy|hola)`),
+            Usage:   "say hi and I'll respond",
+            Regex:   regexp.MustCompile(`^(?i)(hello|hi|hey|howdy|hola)`),
             Handler: func(bot *slackbot.Bot, ev *slack.MessageEvent) {
                 bot.Reply(ev.Channel, "Hi there, nice to meet you")
             },
@@ -140,8 +140,8 @@ bot := slackbot.Bot{
     Token: apiToken,
     IndirectListeners: []slackbot.Listener{
         {
-            Usage: "if anyone in the channel says 'trigger indirect listener' I'll respond",
-            Regex: regexp.MustCompile(`trigger indirect listener`),
+            Usage:   "if anyone in the channel says 'trigger indirect listener' I'll respond",
+            Regex:   regexp.MustCompile(`trigger indirect listener`),
             Handler: func(bot *slackbot.Bot, ev *slack.MessageEvent) {
                 bot.Reply(ev.Channel, "You have triggered an indirect listener")
             },
@@ -192,7 +192,7 @@ slackbot.Exchange{
             Message: "What is your favorite color?",
         },
         2: {
-            Name: "receive favorite color",
+            Name:       "receive favorite color",
             MsgHandler: func(ex *slackbot.Exchange, ev *slack.MessageEvent) (retry bool, err error) {
                 if err := ex.Store.Put("color", ev.Text); err != nil {
                     return false, ex.SendDefaultErrorMessage(err)
@@ -201,7 +201,7 @@ slackbot.Exchange{
             },
         },
         3: {
-            Name: "do something with the data collected",
+            Name:    "do something with the data collected",
             Handler: func(ex *slackbot.Exchange) error {
                 var name, color string
                 if err := ex.Store.Get("name", &name); err != nil {
@@ -239,7 +239,7 @@ when the bot is started with `bot.Start()`.
 ```golang 
 slackbot.ScheduledTask{
     Schedule: "0 8 * * *",
-    Task: func(bot *slackbot.Bot) {
+    Task:     func(bot *slackbot.Bot) {
         bot.Reply("general", "Hey, its 8am on Monday just in case you were wondering.")
     },
 }
