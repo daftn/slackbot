@@ -11,7 +11,7 @@ import (
 
 // A client to be used to demonstrate using a closure for more functionality.
 // For example, this could be a jira or github client that you want to access in the handler of a listener.
-type ClosureExampleClient struct {
+type closureExampleClient struct {
 	APIToken   string
 	HTTPClient *http.Client
 }
@@ -25,7 +25,7 @@ func main() {
 	apiToken := "add_your_slack_token"
 	debugChannel := "add_your_debug_channel"
 
-	exampleClient := &ClosureExampleClient{
+	exampleClient := &closureExampleClient{
 		APIToken:   "random_token",
 		HTTPClient: http.DefaultClient,
 	}
@@ -56,7 +56,7 @@ func main() {
 // Also notice that we are passing in the ClosureExample client from main
 // so that we can access it in our listener.
 
-func buildDirectListeners(c *ClosureExampleClient) []slackbot.Listener {
+func buildDirectListeners(c *closureExampleClient) []slackbot.Listener {
 	return []slackbot.Listener{
 		{
 			Usage: "say hi",
@@ -80,7 +80,7 @@ func buildDirectListeners(c *ClosureExampleClient) []slackbot.Listener {
 	}
 }
 
-func getWrappedHandler(c *ClosureExampleClient) func(bot *slackbot.Bot, ev *slack.MessageEvent) {
+func getWrappedHandler(c *closureExampleClient) func(bot *slackbot.Bot, ev *slack.MessageEvent) {
 
 	return func(bot *slackbot.Bot, ev *slack.MessageEvent) {
 

@@ -8,6 +8,7 @@ type cronScheduler interface {
 }
 
 type (
+	// ScheduledTask is used to run the Task on a scheduled cron using the string Schedule
 	ScheduledTask struct {
 		Schedule string
 		Task     taskFunc

@@ -10,7 +10,7 @@ import (
 const firstStepIndex = 1
 
 type (
-	// Exchanges are a way to have a back and forth conversation between a slack user and a slack bot.
+	// Exchange is used to have a back and forth conversation between a slack user and a slack bot.
 	// When a user sends a message that matches the Regex specified in the exchange, the exchange with
 	// the bot will be initiated in a thread on the original message.
 	Exchange struct {
@@ -42,7 +42,7 @@ type (
 		currentStep int
 	}
 
-	// Exchanges contain a list of Steps. Steps have three potential interaction methods: Message,
+	// Step Exchanges contain a list of Steps. Steps have three potential interaction methods: Message,
 	// Handler, or MsgHandler. When a step is being executed, if a Message is set the message will
 	// be sent and the exchange will move to the next step. If no message is set the Handler will
 	// be checked, if it is set the Handler will be called. If the message and handler are not set,

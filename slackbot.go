@@ -48,12 +48,17 @@ import (
 const (
 	defaultFallback           = "That is not a valid command..."
 	circuitBreakerMessage     = "*CIRCUIT BREAKER TRIPPED*\nMore than %d messages were sent in under %d seconds\n\nSelf destruct sequence initiated. Goodbye."
-	slackConnectionRetry      = 10
 	slackConnectionRetrySleep = 500 * time.Millisecond
 	directMessagePrefix       = "D"
 )
 
+var (
+	slackConnectionRetry = 10
+)
+
 type (
+
+	// Bot is the central struct for the slackbot. This is where all needed values will be set and methods exist.
 	Bot struct {
 
 		// Slack bot api token, see https://api.slack.com/bot-users
@@ -100,7 +105,7 @@ type (
 		count         int
 	}
 
-	// Listeners will listen for an incoming message that matches the Regex. When a match is
+	// Listener will listen for an incoming message that matches the Regex. When a match is
 	// found the Handler function will be called. There are two types of listeners, direct and indirect.
 	// Indirect listeners listed for all messages in channels that the bot is a member of. Messages can
 	// match the regex and run the handler even if the message is not directed at the bot. Direct
@@ -113,6 +118,7 @@ type (
 		Handler func(bot *Bot, ev *slack.MessageEvent)
 	}
 
+	// Store can be used to persist data between restarts or between interaction methods.
 	Store interface {
 		Put(key string, value interface{}) error
 		Get(key string, value interface{}) error
@@ -276,7 +282,7 @@ func (bot *Bot) processMessage(ev *slack.MessageEvent) {
 
 func (bot *Bot) checkCircuitBreaker(channel string) {
 	if bot.CircuitBreaker != nil {
-		bot.CircuitBreaker.count += 1
+		bot.CircuitBreaker.count++
 		if bot.CircuitBreaker.intervalStart.Before(time.Now().Add(-bot.CircuitBreaker.TimeInterval)) {
 			bot.CircuitBreaker.intervalStart = time.Now()
 			bot.CircuitBreaker.count = 1

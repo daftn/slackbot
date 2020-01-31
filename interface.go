@@ -6,6 +6,7 @@ import (
 	"io"
 )
 
+// MessagingClient allows for mocking the slack client for testing
 type MessagingClient interface {
 	AddChannelReminder(string, string, string) (*slack.Reminder, error)
 	AddPin(string, slack.ItemRef) error

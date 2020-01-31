@@ -9,9 +9,10 @@ import (
 // SimpleStore is an optional store that can be used for the Store on an Exchange.
 type SimpleStore map[string][]byte
 
+// Put adds the value to the simple store.
 func (s SimpleStore) Put(key string, value interface{}) error {
 	if value == nil {
-		return errors.New("error")
+		return errors.Errorf("error try to put key %s", key)
 	}
 	var buf bytes.Buffer
 	if err := gob.NewEncoder(&buf).Encode(value); err != nil {
@@ -21,6 +22,7 @@ func (s SimpleStore) Put(key string, value interface{}) error {
 	return nil
 }
 
+// Get retrieves a value by key from the simple store.
 func (s SimpleStore) Get(key string, value interface{}) error {
 	v, ok := s[key]
 	if !ok {
@@ -30,6 +32,7 @@ func (s SimpleStore) Get(key string, value interface{}) error {
 	return d.Decode(value)
 }
 
+// Delete removes a value by key from the simple store.
 func (s SimpleStore) Delete(key string) error {
 	_, ok := s[key]
 	if !ok {
