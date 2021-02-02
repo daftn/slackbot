@@ -16,7 +16,7 @@ $ go get github.com/daftn/slackbot
 ```
 
 ## GoDocs
-https://godoc.org/github.com/daftn/slackbot
+https://pkg.go.dev/github.com/daftn/slackbot
 
 ## Usage
 
