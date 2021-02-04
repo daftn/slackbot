@@ -3,6 +3,7 @@ package slackbot
 import (
 	"bytes"
 	"encoding/gob"
+
 	"github.com/pkg/errors"
 )
 

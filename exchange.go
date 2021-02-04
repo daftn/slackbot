@@ -2,9 +2,10 @@ package slackbot
 
 import (
 	"fmt"
-	"github.com/nlopes/slack"
-	"github.com/pkg/errors"
 	"regexp"
+
+	"github.com/pkg/errors"
+	"github.com/slack-go/slack"
 )
 
 const firstStepIndex = 1

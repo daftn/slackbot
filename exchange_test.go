@@ -2,11 +2,12 @@ package slackbot
 
 import (
 	"errors"
-	"github.com/nlopes/slack"
 	"reflect"
 	"regexp"
 	"sync"
 	"testing"
+
+	"github.com/slack-go/slack"
 )
 
 func TestExchange_GetCurrentStep(t *testing.T) {

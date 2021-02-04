@@ -33,16 +33,17 @@ package slackbot
 import (
 	"bytes"
 	"fmt"
-	"github.com/nlopes/slack"
-	"github.com/pkg/errors"
-	"github.com/robfig/cron"
-	"github.com/ulule/deepcopier"
 	"log"
 	"os"
 	"regexp"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/robfig/cron"
+	"github.com/slack-go/slack"
+	"github.com/ulule/deepcopier"
 )
 
 const (

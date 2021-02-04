@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/daftn/slackbot"
-	"github.com/nlopes/slack"
 	"regexp"
+
+	"github.com/daftn/slackbot"
+	"github.com/slack-go/slack"
 )
 
 func main() {

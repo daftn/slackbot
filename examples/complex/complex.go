@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/daftn/slackbot"
-	"github.com/nlopes/slack"
 	"net/http"
 	"regexp"
 	"time"
+
+	"github.com/daftn/slackbot"
+	"github.com/slack-go/slack"
 )
 
 // A client to be used to demonstrate using a closure for more functionality.

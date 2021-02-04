@@ -1,12 +1,13 @@
 package slackbot
 
 import (
-	"github.com/nlopes/slack"
-	"github.com/pkg/errors"
 	"regexp"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/slack-go/slack"
 )
 
 type mockAPI struct {

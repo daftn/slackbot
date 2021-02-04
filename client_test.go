@@ -2,9 +2,10 @@ package slackbot
 
 import (
 	"errors"
-	"github.com/nlopes/slack"
 	"reflect"
 	"testing"
+
+	"github.com/slack-go/slack"
 )
 
 func Test_slackClient_GetChannel(t *testing.T) {

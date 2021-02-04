@@ -2,8 +2,9 @@ package slackbot
 
 import (
 	"context"
-	"github.com/nlopes/slack"
 	"io"
+
+	"github.com/slack-go/slack"
 )
 
 // MessagingClient allows for mocking the slack client for testing
